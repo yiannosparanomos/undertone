@@ -23,7 +23,7 @@ jobs:
         # 29 = minSdk (Android 10), 33 = Android 13, 35 = Android 15.
         api-level: [29, 33, 35]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-java@v4
         with:
