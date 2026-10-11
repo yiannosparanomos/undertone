@@ -18,5 +18,9 @@ All notable changes are documented here. The format follows
   suppresses ringtone and vibration, early release of a snoozed notification works on API 33+
   but not on API 29, and `INTERRUPTION_FILTER_NONE` must never be used because it mutes
   alarms. HyperOS listener survival is still open (phone only).
+- `core:data`: encrypted Room database (SQLCipher, passphrase wrapped by an Android Keystore
+  key) holding the log, held inbox, recent calls and daily blocked counts; DataStore settings in
+  the same JSON that settings export produces; retention sweep (7 days, adjustable); settings
+  export and import. See ADR 0007.
 - Docs: spec, architecture and ADRs, test matrix, device checklist, development setup,
   Play Store documents, privacy policy, user guide.

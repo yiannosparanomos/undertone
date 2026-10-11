@@ -25,10 +25,15 @@ phone session for what only HyperOS can answer. Findings in
 
 ## M2: Data layer (`core:data`)
 
-- [ ] DataStore for settings (`UndertoneSettings`, profile, override)
-- [ ] Encrypted Room database (SQLCipher, key in Android Keystore): log, held inbox, recent calls
-- [ ] 7-day expiry (adjustable); daily blocked counts
-- [ ] Settings export/import to a user-chosen file
+Decisions and their reasons: `docs/adr/0007-encrypted-storage.md`.
+
+- [x] DataStore for settings (`UndertoneSettings`, profile, override) — JSON, the same format
+      export produces
+- [x] Encrypted Room database (SQLCipher, key in Android Keystore): log, held inbox, recent
+      calls
+- [x] 7-day expiry (adjustable); daily blocked counts
+- [x] Settings export/import to a user-chosen file — streams done and tested; the file picker
+      itself is UI and lands with the Rules screen in M5
 
 ## M3: Notification pipeline (`core:system`)
 

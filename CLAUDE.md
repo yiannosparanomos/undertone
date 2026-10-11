@@ -61,7 +61,7 @@ Settings tile), and `feature:*` modules if `app` grows past a handful of screens
 ./gradlew assembleDebug            # debug APK
 ./gradlew lintDebug                # Android lint
 ./gradlew connectedDebugAndroidTest  # instrumented tests on a running emulator/phone
-ktlint "**/*.kt" "**/*.kts"        # style check (-F to fix)
+ktlint "**/*.kt" "**/*.kts" "!**/build/**"   # style check (-F to fix)
 ```
 
 Dev environment (remote server + NoMachine + emulator): `docs/development.md`.

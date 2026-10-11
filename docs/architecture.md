@@ -19,7 +19,7 @@ feeds it events and carries out its decisions.
 | `core:domain` | exists | Models, `NotificationEngine`, `CallEngine`, scenarios. Pure Kotlin, no clock. |
 | `core:designsystem` | exists | Theme, typography, shared Compose components. |
 | `app` | exists | Activity, navigation, screens under `ui/<feature>`. |
-| `core:data` | planned | Encrypted Room database (log, held inbox, recent calls), DataStore settings, export/import. |
+| `core:data` | exists | Encrypted Room database (log, held inbox, recent calls, blocked counts), DataStore settings, export/import. ADR 0007. |
 | `core:system` | planned | `NotificationListenerService`, `CallScreeningService`, DND controller, sound player, calendar reader (`CalendarContract`), launchable-app list, watchdog. |
 | `widget` | planned | Home-screen widget (Jetpack Glance) and Quick Settings tile. |
 
@@ -54,8 +54,9 @@ lets the scenario catalog test every behaviour in milliseconds.
   shouldn't ring. Calls are never rejected.
 - **DND controller**: turns Do Not Disturb on while My rules is active, with alarms always
   allowed — `INTERRUPTION_FILTER_PRIORITY`, never `INTERRUPTION_FILTER_NONE`, which mutes the
-  alarm stream. The ringer mode is not a usable signal under DND (ADR 0006). A watchdog (boot receiver + periodic check) turns DND off and warns the user if the
-  listener stops running, so the phone fails loud, not silent.
+  alarm stream. The ringer mode is not a usable signal under DND (ADR 0006). A watchdog
+  (boot receiver + periodic check) turns DND off and warns the user if the listener stops
+  running, so the phone fails loud, not silent.
 - **Rule boundaries** (e.g. 18:00): scheduled with exact alarms, re-evaluating DND and held
   notifications.
 

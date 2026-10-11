@@ -84,4 +84,5 @@ jobs:
         run: |
           curl -sSLO "https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}/ktlint"
           chmod +x ktlint
-          ./ktlint "**/*.kt" "**/*.kts"
+          # Exclude build/: Room's generated DAOs are not ours to style.
+          ./ktlint "**/*.kt" "**/*.kts" "!**/build/**"
