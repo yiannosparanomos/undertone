@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UnderTone</string>
+
+    <string name="home_profile_label">Profile</string>
+    <string name="profile_my_rules">My rules</string>
+    <string name="profile_allow_all">Allow all</string>
+    <string name="profile_system_dnd">System DND</string>
+
+    <string name="home_status_label">Right now</string>
+    <string name="home_status_my_rules">Your rules decide what rings.</string>
+    <string name="home_status_allow_all">Everything comes through, like a normal phone.</string>
+    <string name="home_status_system_dnd">Android\'s own Do Not Disturb is in charge.</string>
+
+    <string name="home_preview_label">Preview</string>
+    <string name="home_preview_body">Teams on Saturday at 11:00 would be: %1$s</string>
+
+    <string name="home_privacy_label">Privacy</string>
+    <string name="home_privacy_body">UnderTone has no internet access. Nothing leaves this phone.</string>
+</resources>
