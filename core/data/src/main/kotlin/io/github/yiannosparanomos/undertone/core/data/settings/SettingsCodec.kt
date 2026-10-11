@@ -43,6 +43,9 @@ object SettingsCodec {
         if (dto.retentionDays < 1) {
             throw StoredStateException("retentionDays: must be at least 1, was ${dto.retentionDays}.")
         }
+        if (dto.sounds.volumePercent !in 0..100) {
+            throw StoredStateException("volumePercent: must be between 0 and 100, was ${dto.sounds.volumePercent}.")
+        }
         // Convert once up front so a bad enum or time is an import error, not a crash later on.
         dto.validate()
         return dto

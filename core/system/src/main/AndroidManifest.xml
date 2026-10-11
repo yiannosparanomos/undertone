@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The platform layer's components. No INTERNET permission here either: this module talks to
+    the phone, never to a network (ADR 0003).
+
+    Exported surface, per invariant 6: the notification listener and the receiver are the only
+    components Android binds to, and neither is exported to other apps. The listener carries
+    BIND_NOTIFICATION_LISTENER_SERVICE so only the system can bind it; the receiver listens for
+    BOOT_COMPLETED and for UnderTone's own boundary broadcast, which is package-scoped.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Rule boundaries have to land on the minute: a late alarm means the phone already rang. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <application>
+
+        <service
+            android:name=".notification.UndertoneListenerService"
+            android:exported="false"
+            android:label="@string/undertone_listener_label"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".watchdog.UndertoneReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="io.github.yiannosparanomos.undertone.RULE_BOUNDARY" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

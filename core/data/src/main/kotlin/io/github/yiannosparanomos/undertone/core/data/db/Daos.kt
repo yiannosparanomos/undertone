@@ -130,3 +130,69 @@ interface BlockedCountDao {
     @Query("DELETE FROM blocked_counts")
     suspend fun clear()
 }
+
+@Dao
+interface DismissalDao {
+    /**
+     * Records that a notification from [packageName] was swiped away without being opened, or
+     * opened. Two statements for the same reason as [BlockedCountDao.increment]: Android 10's
+     * SQLite has no UPSERT.
+     */
+    @Transaction
+    suspend fun recordSwipedAway(
+        packageName: String,
+        day: String,
+    ) {
+        insertIfAbsent(DismissalCountEntity(packageName, day))
+        bumpSwipedAway(packageName, day)
+    }
+
+    @Transaction
+    suspend fun recordOpened(
+        packageName: String,
+        day: String,
+    ) {
+        insertIfAbsent(DismissalCountEntity(packageName, day))
+        bumpOpened(packageName, day)
+    }
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertIfAbsent(row: DismissalCountEntity)
+
+    @Query("UPDATE dismissal_counts SET swipedAway = swipedAway + 1 WHERE packageName = :packageName AND day = :day")
+    suspend fun bumpSwipedAway(
+        packageName: String,
+        day: String,
+    )
+
+    @Query("UPDATE dismissal_counts SET opened = opened + 1 WHERE packageName = :packageName AND day = :day")
+    suspend fun bumpOpened(
+        packageName: String,
+        day: String,
+    )
+
+    @Query(
+        """
+        SELECT packageName,
+               SUM(swipedAway) AS swipedAway,
+               SUM(opened) AS opened
+        FROM dismissal_counts
+        WHERE day >= :since
+        GROUP BY packageName
+        """,
+    )
+    suspend fun totalsSince(since: String): List<DismissalTotals>
+
+    @Query("DELETE FROM dismissal_counts WHERE day < :cutoff")
+    suspend fun deleteOlderThan(cutoff: String): Int
+
+    @Query("DELETE FROM dismissal_counts")
+    suspend fun clear()
+}
+
+/** One app's swipe-versus-open totals over a period. */
+data class DismissalTotals(
+    val packageName: String,
+    val swipedAway: Int,
+    val opened: Int,
+)

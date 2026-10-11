@@ -37,12 +37,16 @@ Decisions and their reasons: `docs/adr/0007-encrypted-storage.md`.
 
 ## M3: Notification pipeline (`core:system`)
 
-- [ ] `NotificationListenerService` → engine → leave / snooze until `releaseAt` / cancel
-- [ ] Sound player for Ring apps (default + per-app sound, vibration, volume)
-- [ ] DND controller (alarms always allowed)
-- [ ] Watchdog + boot receiver: fail loud
-- [ ] Exact alarms at rule boundaries; release summary notification
-- [ ] Swipe-without-opening tracking for block suggestions
+- [x] `NotificationListenerService` → engine → leave / snooze until `releaseAt` / cancel
+- [x] Sound player for Ring apps (default + per-app sound, vibration, volume)
+- [x] DND controller (alarms always allowed) — `INTERRUPTION_FILTER_PRIORITY`, never `NONE`
+- [x] Watchdog + boot receiver: fail loud
+- [x] Exact alarms at rule boundaries; release summary notification
+- [x] Swipe-without-opening tracking for block suggestions
+
+Calendar events still come from `CalendarEventSource.None`: the real reader needs
+`READ_CALENDAR` and arrives with the calendar rules screen in M5, so no calendar rule can match
+until then.
 
 ## M4: Calls
 

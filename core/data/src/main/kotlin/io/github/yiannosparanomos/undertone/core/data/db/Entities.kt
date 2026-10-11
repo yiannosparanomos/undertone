@@ -86,3 +86,19 @@ data class BlockedCountEntity(
     val day: String,
     val count: Int,
 )
+
+/**
+ * How a user treats one app's notifications: how many they swiped away without opening, and how
+ * many they opened.
+ *
+ * This is what the block suggestions are built on — "you never open these" (spec §2). Counts per
+ * app per day, so there is no per-notification row and nothing to leak.
+ */
+@Entity(tableName = "dismissal_counts", primaryKeys = ["packageName", "day"])
+data class DismissalCountEntity(
+    val packageName: String,
+    /** ISO-8601 local date, "2026-10-12". */
+    val day: String,
+    val swipedAway: Int = 0,
+    val opened: Int = 0,
+)

@@ -8,9 +8,12 @@ Every promised behaviour, the scenario that checks it, and the layers that cover
 | **2. Emulator** | Instrumented tests on Android 10, 13, 15 | Nightly, on release tags (`emulator.yml`) |
 | **3. Real phone** | `device-checklist.md` | Before every release ("Release test run" issue) |
 
-Layer 2 currently has a Home-screen smoke test. As the platform adapters land, each scenario
-group gets an emulator test that drives the real listener and call-screening services with
-fake apps and simulated calls; the "L2" column tracks that.
+Layer 2 currently has a Home-screen smoke test, plus module-level emulator tests that run on
+Android 10, 13 and 15: `core:data` (18 — encryption of the database file, what each decision
+records, retention) and `core:system` (20 — the pipeline end to end with the real engine and
+database, boundary alarms, the watchdog's failure path). As the remaining platform adapters
+land, each scenario group gets an emulator test that drives the real listener and
+call-screening services with fake apps and simulated calls; the "L2" column tracks that.
 
 ## Profiles
 

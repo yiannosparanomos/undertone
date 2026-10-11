@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "edb61f80ff683d3ce4b771a214013115",
+    "identityHash": "55d368a1e6770048f948f00eb66ffa61",
     "entities": [
       {
         "tableName": "log_entries",
@@ -237,11 +237,48 @@
             "day"
           ]
         }
+      },
+      {
+        "tableName": "dismissal_counts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`packageName` TEXT NOT NULL, `day` TEXT NOT NULL, `swipedAway` INTEGER NOT NULL, `opened` INTEGER NOT NULL, PRIMARY KEY(`packageName`, `day`))",
+        "fields": [
+          {
+            "fieldPath": "packageName",
+            "columnName": "packageName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day",
+            "columnName": "day",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "swipedAway",
+            "columnName": "swipedAway",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "opened",
+            "columnName": "opened",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "packageName",
+            "day"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'edb61f80ff683d3ce4b771a214013115')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '55d368a1e6770048f948f00eb66ffa61')"
     ]
   }
 }

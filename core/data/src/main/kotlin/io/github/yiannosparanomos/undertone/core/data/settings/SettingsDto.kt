@@ -37,6 +37,7 @@ data class StoredStateDto(
     val override: OverrideDto? = null,
     /** How long log entries and held notifications are kept. Spec default: 7 days. */
     val retentionDays: Int = DEFAULT_RETENTION_DAYS,
+    val sounds: SoundsDto = SoundsDto(),
 ) {
     companion object {
         /** Bumped whenever the stored shape changes in a way that needs migrating. */
@@ -52,6 +53,32 @@ data class SettingsDto(
     val calendarRules: List<CalendarRuleDto> = emptyList(),
     val defaultCallTier: String = CallTier.ALLOW_LIST.name,
     val repeatCallers: RepeatCallersDto = RepeatCallersDto(),
+)
+
+/**
+ * What a Ring app sounds like.
+ *
+ * Sounds are not part of the rule engine: the engine decides *whether* a notification rings,
+ * never what it sounds like, so none of this appears in `core:domain` (invariant 3). UnderTone
+ * plays these itself because DND mutes the system's own sounds (ADR 0006).
+ */
+@Serializable
+data class SoundsDto(
+    /** Content URI of the default Ring sound; null means the system notification sound. */
+    val defaultSoundUri: String? = null,
+    val vibrate: Boolean = true,
+    /** 0-100, applied on top of the notification stream's own volume. */
+    val volumePercent: Int = 100,
+    val perApp: List<AppSoundDto> = emptyList(),
+) {
+    fun forApp(packageName: String): AppSoundDto? = perApp.firstOrNull { it.packageName == packageName }
+}
+
+@Serializable
+data class AppSoundDto(
+    val packageName: String,
+    val soundUri: String? = null,
+    val vibrate: Boolean? = null,
 )
 
 @Serializable

@@ -22,5 +22,12 @@ All notable changes are documented here. The format follows
   key) holding the log, held inbox, recent calls and daily blocked counts; DataStore settings in
   the same JSON that settings export produces; retention sweep (7 days, adjustable); settings
   export and import. See ADR 0007.
+- `core:system`: notification listener driving the engine (leave, snooze until `releaseAt`,
+  cancel), sound player for Ring apps while DND is on, DND controller, exact alarms at rule
+  boundaries, release summary, watchdog and boot receiver, and swipe-without-opening tracking
+  for block suggestions.
+- `RuleBoundaries` in `core:domain`: when the rules next change, which the boundary alarms use.
+- CI now also checks invariant 6 — the release manifest exports nothing but the launcher
+  activity (`tools/ci/check_exported_components.py`).
 - Docs: spec, architecture and ADRs, test matrix, device checklist, development setup,
   Play Store documents, privacy policy, user guide.

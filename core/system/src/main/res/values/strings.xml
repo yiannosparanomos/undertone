@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shown in the system's notification-access list, next to the switch the user turns on. -->
+    <string name="undertone_listener_label">UnderTone</string>
+</resources>

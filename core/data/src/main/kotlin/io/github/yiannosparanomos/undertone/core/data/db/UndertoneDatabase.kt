@@ -18,6 +18,7 @@ import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
         HeldNotificationEntity::class,
         RecentCallEntity::class,
         BlockedCountEntity::class,
+        DismissalCountEntity::class,
     ],
     version = 1,
     exportSchema = true,
@@ -30,6 +31,8 @@ abstract class UndertoneDatabase : RoomDatabase() {
     abstract fun recentCallDao(): RecentCallDao
 
     abstract fun blockedCountDao(): BlockedCountDao
+
+    abstract fun dismissalDao(): DismissalDao
 
     companion object {
         const val FILE_NAME = "undertone.db"

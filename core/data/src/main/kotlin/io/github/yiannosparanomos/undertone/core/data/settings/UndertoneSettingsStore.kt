@@ -35,6 +35,9 @@ class UndertoneSettingsStore(
 
     val retentionDays: Flow<Int> = state.map { it.retentionDays }
 
+    /** What Ring apps sound like. Not part of the engine: it decides whether, not what. */
+    val sounds: Flow<SoundsDto> = state.map { it.sounds }
+
     /**
      * The current override, or null when none is set **or it has already run out**. Overrides end
      * by themselves (spec §4), so the stored one is filtered by [at] rather than cleared on a timer.
@@ -66,6 +69,12 @@ class UndertoneSettingsStore(
         dataStore.updateData { stored ->
             stored.copy(settings = transform(stored.settings.toDomain()).toDto())
         }
+    }
+
+    suspend fun updateSounds(transform: (SoundsDto) -> SoundsDto) {
+        val updated = transform(current().sounds)
+        require(updated.volumePercent in 0..100) { "Volume must be between 0 and 100" }
+        dataStore.updateData { it.copy(sounds = updated) }
     }
 
     suspend fun setOverride(override: Override?) {

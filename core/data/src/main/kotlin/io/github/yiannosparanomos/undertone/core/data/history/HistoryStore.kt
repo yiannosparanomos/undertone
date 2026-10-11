@@ -2,6 +2,7 @@ package io.github.yiannosparanomos.undertone.core.data.history
 
 import io.github.yiannosparanomos.undertone.core.data.db.BlockedCountDao
 import io.github.yiannosparanomos.undertone.core.data.db.BlockedCountEntity
+import io.github.yiannosparanomos.undertone.core.data.db.DismissalDao
 import io.github.yiannosparanomos.undertone.core.data.db.HeldDao
 import io.github.yiannosparanomos.undertone.core.data.db.HeldNotificationEntity
 import io.github.yiannosparanomos.undertone.core.data.db.LogDao
@@ -33,6 +34,7 @@ class HistoryStore(
     private val heldDao: HeldDao,
     private val recentCallDao: RecentCallDao,
     private val blockedCountDao: BlockedCountDao,
+    private val dismissalDao: DismissalDao,
 ) {
     // --- Notifications ------------------------------------------------------------------------
 
@@ -166,6 +168,43 @@ class HistoryStore(
         since: LocalDate,
     ): Int = blockedCountDao.totalForApp(packageName, since.toString())
 
+    // --- Swipes and block suggestions ---------------------------------------------------------
+
+    /** The user swiped a notification away without opening it. */
+    suspend fun recordSwipedAway(
+        packageName: String,
+        at: LocalDateTime,
+    ) = dismissalDao.recordSwipedAway(packageName, at.toLocalDate().toString())
+
+    /** The user opened a notification. */
+    suspend fun recordOpened(
+        packageName: String,
+        at: LocalDateTime,
+    ) = dismissalDao.recordOpened(packageName, at.toLocalDate().toString())
+
+    /**
+     * Apps worth suggesting Silent or Block for: swiped away at least [threshold] times since
+     * [since] and never opened (spec §2 suggests 10 in a week).
+     *
+     * "Never opened" rather than "rarely opened" on purpose — a suggestion that fires on an app
+     * the user does sometimes read would train them to dismiss suggestions.
+     */
+    suspend fun blockSuggestions(
+        since: LocalDate,
+        threshold: Int = DEFAULT_SUGGESTION_THRESHOLD,
+    ): List<BlockSuggestion> =
+        dismissalDao
+            .totalsSince(since.toString())
+            .filter { it.opened == 0 && it.swipedAway >= threshold }
+            .sortedByDescending { it.swipedAway }
+            .map { BlockSuggestion(it.packageName, it.swipedAway) }
+
+    /** An app the user keeps swiping away and never opens. */
+    data class BlockSuggestion(
+        val packageName: String,
+        val swipedAway: Int,
+    )
+
     // --- Retention ----------------------------------------------------------------------------
 
     /**
@@ -186,6 +225,7 @@ class HistoryStore(
             heldNotifications = heldDao.deleteOlderThan(cutoff.toString()),
             recentCalls = recentCallDao.deleteOlderThan(cutoff.toString()),
             blockedCountDays = blockedCountDao.deleteOlderThan(cutoff.toLocalDate().toString()),
+            dismissalDays = dismissalDao.deleteOlderThan(cutoff.toLocalDate().toString()),
         )
     }
 
@@ -195,8 +235,10 @@ class HistoryStore(
         val heldNotifications: Int,
         val recentCalls: Int,
         val blockedCountDays: Int,
+        val dismissalDays: Int,
     ) {
-        val total: Int get() = logEntries + heldNotifications + recentCalls + blockedCountDays
+        val total: Int
+            get() = logEntries + heldNotifications + recentCalls + blockedCountDays + dismissalDays
     }
 
     /** Wipes every row. Behind "Delete my data" and used by tests. */
@@ -205,15 +247,20 @@ class HistoryStore(
         heldDao.clear()
         recentCallDao.clear()
         blockedCountDao.clear()
+        dismissalDao.clear()
     }
 
     companion object {
+        /** Spec §2: "e.g. 10 in a week". */
+        const val DEFAULT_SUGGESTION_THRESHOLD = 10
+
         fun from(database: UndertoneDatabase): HistoryStore =
             HistoryStore(
                 logDao = database.logDao(),
                 heldDao = database.heldDao(),
                 recentCallDao = database.recentCallDao(),
                 blockedCountDao = database.blockedCountDao(),
+                dismissalDao = database.dismissalDao(),
             )
     }
 }
