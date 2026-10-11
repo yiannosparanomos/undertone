@@ -6,6 +6,7 @@ repeat-caller rule; switched from a home-screen widget. Open source (Apache-2.0)
 with Claude, maintained by @yiannosparanomos.
 
 Product spec: `docs/spec/v1-spec.md`. Architecture: `docs/architecture.md`.
+What to build next: `docs/roadmap.md` (work milestones in order; tick items as they merge).
 
 ## Non-negotiable invariants
 
