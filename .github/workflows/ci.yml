@@ -28,7 +28,7 @@ jobs:
           java-version: "17"
 
       # Also validates that gradle-wrapper.jar is a genuine Gradle release.
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Scenario and unit tests
         run: ./gradlew :core:domain:test testDebugUnitTest --stacktrace
