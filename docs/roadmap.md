@@ -7,15 +7,21 @@ Milestones in order. Each one ends with CI green and the docs it touches updated
 
 Modules, rule engine with 51 scenarios, CI, docs, dev environment.
 
-## M1: Phone spike (de-risk before building)
+## M1: Platform spike (de-risk before building)
 
-Small throwaway test build on the Redmi Note 14 Pro to check the Android behaviours the design
-depends on. Record findings in a new ADR (`docs/adr/0006-platform-findings.md`).
+Throwaway probe (`tools/spike/platform-probe/`) run on emulators at API 29, 33 and 35, plus a
+phone session for what only HyperOS can answer. Findings in
+`docs/adr/0006-platform-findings.md`.
 
-- [ ] Call screening is consulted for callers **in** contacts, and `setSilenceCall` works
-- [ ] UnderTone's own sounds play while DND is on, and which volume stream they follow
-- [ ] A snoozed notification can be released early, or the fallback (re-post a copy) is needed
-- [ ] HyperOS keeps the listener alive with Autostart on and battery unrestricted
+- [x] Call screening is consulted for callers **in** contacts, and `setSilenceCall` works —
+      yes on all three, and silencing suppresses vibration too
+- [x] UnderTone's own sounds play while DND is on, and which volume stream they follow —
+      `STREAM_NOTIFICATION` under `INTERRUPTION_FILTER_PRIORITY`; never use
+      `INTERRUPTION_FILTER_NONE` (it mutes alarms) and never read the ringer mode
+- [x] A snoozed notification can be released early, or the fallback (re-post a copy) is needed
+      — early release works on API 33+, API 29 needs the copy
+- [ ] HyperOS keeps the listener alive with Autostart on and battery unrestricted — **phone
+      only**, still open; batch with device-checklist D2, D3, D4, D6
 
 ## M2: Data layer (`core:data`)
 

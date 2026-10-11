@@ -53,7 +53,8 @@ lets the scenario catalog test every behaviour in milliseconds.
 - **Calls**: a `CallScreeningService` (call-screening role) silences calls the engine says
   shouldn't ring. Calls are never rejected.
 - **DND controller**: turns Do Not Disturb on while My rules is active, with alarms always
-  allowed. A watchdog (boot receiver + periodic check) turns DND off and warns the user if the
+  allowed — `INTERRUPTION_FILTER_PRIORITY`, never `INTERRUPTION_FILTER_NONE`, which mutes the
+  alarm stream. The ringer mode is not a usable signal under DND (ADR 0006). A watchdog (boot receiver + periodic check) turns DND off and warns the user if the
   listener stops running, so the phone fails loud, not silent.
 - **Rule boundaries** (e.g. 18:00): scheduled with exact alarms, re-evaluating DND and held
   notifications.
