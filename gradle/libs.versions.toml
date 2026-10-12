@@ -2,7 +2,7 @@
 # Toolchain: AGP 8.13 needs Gradle 8.13+ and JDK 17; supports compileSdk up to 36.1.
 # See docs/adr/0002-toolchain.md before upgrading (AGP 9 changes how Kotlin is applied).
 agp = "8.13.2"
-kotlin = "2.2.20"
+kotlin = "2.4.21"
 
 compileSdk = "36"
 targetSdk = "36"
