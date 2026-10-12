@@ -35,12 +35,12 @@ What to build next: `docs/roadmap.md` (work milestones in order; tick items as t
 | `app` | Entry point, navigation, screens (`ui/<feature>`) | everything |
 | `core:domain` | Rule engine, models, scenarios | nothing (pure Kotlin) |
 | `core:data` | Encrypted Room database, DataStore settings, export/import | `core:domain` |
-| `core:system` | Notification listener, DND controller, sound player, boundary alarms, watchdog | `core:domain`, `core:data` |
+| `core:system` | Notification listener, call screening, DND controller, sound player, boundary alarms, watchdog | `core:domain`, `core:data` |
 | `core:designsystem` | Theme, type, shared Compose components | Compose only |
 
 Planned (create when the first real code lands, not before): `widget` (Glance widget, Quick
-Settings tile) and `feature:*` modules if `app` grows past a handful of screens. Call
-screening and the calendar reader join `core:system` in M4 and M5.
+Settings tile) and `feature:*` modules if `app` grows past a handful of screens. The calendar
+reader joins `core:system` in M5.
 
 ## Conventions
 

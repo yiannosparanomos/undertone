@@ -58,14 +58,20 @@ data class HeldNotificationEntity(
  *
  * The number is stored because the rule has to recognise the same caller ringing again; it is
  * content and stays in this table only.
+ *
+ * [digits] is the number with everything but digits stripped, and it is what lookups match on.
+ * `CallEngine` compares callers by digits so that "+30 210 123 4567" and "+302101234567" are one
+ * person; querying on the raw string would quietly defeat that and the second call would not
+ * count as a repeat.
  */
 @Entity(
     tableName = "recent_calls",
-    indices = [Index("at"), Index("number")],
+    indices = [Index("at"), Index("digits")],
 )
 data class RecentCallEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val number: String,
+    val digits: String,
     val at: String,
     /** `CallOutcome` name: RING or SILENT. */
     val outcome: String,

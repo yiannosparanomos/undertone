@@ -20,7 +20,7 @@ feeds it events and carries out its decisions.
 | `core:designsystem` | exists | Theme, typography, shared Compose components. |
 | `app` | exists | Activity, navigation, screens under `ui/<feature>`. |
 | `core:data` | exists | Encrypted Room database (log, held inbox, recent calls, blocked counts), DataStore settings, export/import. ADR 0007. |
-| `core:system` | exists | `NotificationListenerService`, DND controller, sound player, boundary alarms, watchdog and boot receiver. Call screening, the calendar reader and the launchable-app list are still to come (M4, M5). |
+| `core:system` | exists | `NotificationListenerService`, `CallScreeningService`, contact lookup, DND controller, sound player, boundary alarms, watchdog and boot receiver. The calendar reader and the launchable-app list are still to come (M5). |
 | `widget` | planned | Home-screen widget (Jetpack Glance) and Quick Settings tile. |
 
 Modules are added when their first real code lands; empty placeholder modules are not

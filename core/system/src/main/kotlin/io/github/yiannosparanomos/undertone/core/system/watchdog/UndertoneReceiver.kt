@@ -42,7 +42,7 @@ class UndertoneReceiver : BroadcastReceiver() {
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         scope.launch {
             runCatching {
-                val settings = UndertoneSettingsStore.create(appContext)
+                val settings = UndertoneSettingsStore.get(appContext)
                 val stored = settings.current()
                 val now = LocalDateTime.now()
                 val state =

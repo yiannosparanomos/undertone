@@ -133,6 +133,7 @@ class HistoryStore(
         recentCallDao.insert(
             RecentCallEntity(
                 number = call.number,
+                digits = digitsOf(call.number),
                 at = call.at.toString(),
                 outcome = decision.outcome.name,
                 tier = decision.tier?.name,
@@ -150,7 +151,7 @@ class HistoryStore(
         window: Duration,
     ): List<PastCall> =
         recentCallDao
-            .from(number, at.minus(window).toString())
+            .from(digitsOf(number), at.minus(window).toString())
             .map { PastCall(number = it.number, at = LocalDateTime.parse(it.at)) }
 
     // --- Blocked counts -----------------------------------------------------------------------
@@ -251,6 +252,12 @@ class HistoryStore(
     }
 
     companion object {
+        /**
+         * The same comparison `CallEngine` makes: digits only, so one caller stays one caller
+         * whatever punctuation their number arrives with.
+         */
+        internal fun digitsOf(number: String): String = number.filter(Char::isDigit)
+
         /** Spec §2: "e.g. 10 in a week". */
         const val DEFAULT_SUGGESTION_THRESHOLD = 10
 

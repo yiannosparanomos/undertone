@@ -38,6 +38,9 @@ class UndertoneSettingsStore(
     /** What Ring apps sound like. Not part of the engine: it decides whether, not what. */
     val sounds: Flow<SoundsDto> = state.map { it.sounds }
 
+    /** Who may ring on the Allow list tier. Resolved against contacts by `core:system`. */
+    val allowList: Flow<AllowListDto> = state.map { it.allowList }
+
     /**
      * The current override, or null when none is set **or it has already run out**. Overrides end
      * by themselves (spec §4), so the stored one is filtered by [at] rather than cleared on a timer.
@@ -75,6 +78,10 @@ class UndertoneSettingsStore(
         val updated = transform(current().sounds)
         require(updated.volumePercent in 0..100) { "Volume must be between 0 and 100" }
         dataStore.updateData { it.copy(sounds = updated) }
+    }
+
+    suspend fun updateAllowList(transform: (AllowListDto) -> AllowListDto) {
+        dataStore.updateData { it.copy(allowList = transform(it.allowList)) }
     }
 
     suspend fun setOverride(override: Override?) {
@@ -118,12 +125,29 @@ class UndertoneSettingsStore(
     companion object {
         private const val FILE_NAME = "undertone-settings.json"
 
+        @Volatile
+        private var instance: UndertoneSettingsStore? = null
+
         /**
+         * The process-wide settings store.
+         *
+         * **One per process, not one per caller.** DataStore allows only a single active
+         * instance per file and throws otherwise, and UnderTone has several components in one
+         * process that all need settings: the notification listener, the call screening service,
+         * the boot receiver and the UI. Creating a second store made call screening throw, which
+         * the service caught and answered by letting the call ring — the safe outcome, but the
+         * user's tier was ignored. Hence the singleton.
+         *
          * A settings file that cannot be read is replaced with the defaults rather than left to
          * crash the app on every start. The user is told on the Health check screen, because
          * silently reverting someone's rules would be worse than saying so.
          */
-        fun create(context: Context): UndertoneSettingsStore =
+        fun get(context: Context): UndertoneSettingsStore =
+            instance ?: synchronized(this) {
+                instance ?: build(context).also { instance = it }
+            }
+
+        private fun build(context: Context): UndertoneSettingsStore =
             UndertoneSettingsStore(
                 DataStoreFactory.create(
                     serializer = StoredStateSerializer,

@@ -52,7 +52,7 @@ class UndertoneListenerService : NotificationListenerService() {
 
     override fun onCreate() {
         super.onCreate()
-        settings = UndertoneSettingsStore.create(applicationContext)
+        settings = UndertoneSettingsStore.get(applicationContext)
         history = HistoryStore.from(UndertoneDatabase.get(applicationContext))
         dnd = DndController.from(applicationContext)
         summary = ReleaseSummary.from(applicationContext)

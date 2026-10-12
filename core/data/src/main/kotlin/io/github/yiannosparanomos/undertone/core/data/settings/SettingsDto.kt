@@ -38,6 +38,7 @@ data class StoredStateDto(
     /** How long log entries and held notifications are kept. Spec default: 7 days. */
     val retentionDays: Int = DEFAULT_RETENTION_DAYS,
     val sounds: SoundsDto = SoundsDto(),
+    val allowList: AllowListDto = AllowListDto(),
 ) {
     companion object {
         /** Bumped whenever the stored shape changes in a way that needs migrating. */
@@ -54,6 +55,42 @@ data class SettingsDto(
     val defaultCallTier: String = CallTier.ALLOW_LIST.name,
     val repeatCallers: RepeatCallersDto = RepeatCallersDto(),
 )
+
+/**
+ * Who is on the allow list (spec §5).
+ *
+ * Like the sounds, this is not in `core:domain`: `CallEngine` is handed a resolved
+ * `isOnAllowList` flag, because deciding whether a number belongs to a starred contact needs
+ * the contacts provider and the engine must stay pure (invariant 3).
+ *
+ * [Mode.STARRED] is the same list Android's own Do Not Disturb uses. [Mode.EXPANDED] is that
+ * list **plus** whatever the user added inside UnderTone — it never takes anyone away.
+ */
+@Serializable
+data class AllowListDto(
+    val mode: Mode = Mode.STARRED,
+    /** Numbers typed into UnderTone. Only consulted in [Mode.EXPANDED]. */
+    val numbers: List<String> = emptyList(),
+    /** Contacts picked inside UnderTone, by `ContactsContract` lookup key. */
+    val contactLookupKeys: List<String> = emptyList(),
+) {
+    @Serializable
+    enum class Mode {
+        @SerialName("starred")
+        STARRED,
+
+        @SerialName("expanded")
+        EXPANDED,
+    }
+
+    /** Digits-only comparison, so "+30 210 123 4567" matches "+302101234567". */
+    fun containsNumber(number: String): Boolean {
+        if (mode == Mode.STARRED) return false
+        val digits = number.filter(Char::isDigit)
+        if (digits.isEmpty()) return false
+        return numbers.any { it.filter(Char::isDigit) == digits }
+    }
+}
 
 /**
  * What a Ring app sounds like.

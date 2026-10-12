@@ -50,8 +50,10 @@ until then.
 
 ## M4: Calls
 
-- [ ] `CallScreeningService` with the call-screening role → `CallEngine`
-- [ ] Recent-call history for repeat callers; allow list (starred or expanded)
+- [x] `CallScreeningService` with the call-screening role → `CallEngine` — silences, never
+      rejects; verified on Android 10, 13 and 15 with a starred contact ringing and an unknown
+      number silenced
+- [x] Recent-call history for repeat callers; allow list (starred or expanded)
 
 ## M5: Screens
 

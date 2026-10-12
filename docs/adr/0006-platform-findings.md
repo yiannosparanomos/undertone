@@ -95,6 +95,15 @@ gets the fallback it may not need — the safe direction, since the fallback wor
 Narrowing the threshold needs an API 30/31/32 emulator run and is not worth blocking M2 for.
 "Release all" and the release summary behave the same either way.
 
+### 3b. A call screening service does not need to be exported (found during M4)
+
+`CallScreeningService` is usually declared `android:exported="true"`. It does not have to be:
+with `android:exported="false"` and `BIND_SCREENING_SERVICE`, Telecom still bound UnderTone's
+service on API 29, 33 and 35, still reported `mIsInContacts=true`, and still honoured the
+response — a starred contact rang and an unknown number was silenced. So the whole app exports
+nothing but the launcher activity, which is stricter than invariant 6 requires and is enforced
+by `tools/ci/check_exported_components.py`.
+
 ### 4. HyperOS listener survival — NOT ANSWERED
 
 *"HyperOS keeps the listener alive with Autostart on and battery unrestricted"* cannot be

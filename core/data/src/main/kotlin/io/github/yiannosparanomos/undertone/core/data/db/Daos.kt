@@ -68,12 +68,15 @@ interface RecentCallDao {
     fun recent(limit: Int = 200): Flow<List<RecentCallEntity>>
 
     /**
-     * Calls from [number] at or after [since], newest first. This is what the repeat-caller rule
-     * counts: "2 calls within 2 minutes" by default.
+     * Calls from one caller at or after [since], newest first. This is what the repeat-caller
+     * rule counts: "2 calls within 2 minutes" by default.
+     *
+     * Matched on [RecentCallEntity.digits], not the raw number, so a caller is the same person
+     * however their number happens to be formatted.
      */
-    @Query("SELECT * FROM recent_calls WHERE number = :number AND at >= :since ORDER BY at DESC")
+    @Query("SELECT * FROM recent_calls WHERE digits = :digits AND at >= :since ORDER BY at DESC")
     suspend fun from(
-        number: String,
+        digits: String,
         since: String,
     ): List<RecentCallEntity>
 

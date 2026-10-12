@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "55d368a1e6770048f948f00eb66ffa61",
+    "identityHash": "2c26f74b170d9a0e46b43669ac65ac25",
     "entities": [
       {
         "tableName": "log_entries",
@@ -148,7 +148,7 @@
       },
       {
         "tableName": "recent_calls",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` TEXT NOT NULL, `at` TEXT NOT NULL, `outcome` TEXT NOT NULL, `tier` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` TEXT NOT NULL, `digits` TEXT NOT NULL, `at` TEXT NOT NULL, `outcome` TEXT NOT NULL, `tier` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -159,6 +159,12 @@
           {
             "fieldPath": "number",
             "columnName": "number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "digits",
+            "columnName": "digits",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -197,13 +203,13 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_recent_calls_at` ON `${TABLE_NAME}` (`at`)"
           },
           {
-            "name": "index_recent_calls_number",
+            "name": "index_recent_calls_digits",
             "unique": false,
             "columnNames": [
-              "number"
+              "digits"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_recent_calls_number` ON `${TABLE_NAME}` (`number`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recent_calls_digits` ON `${TABLE_NAME}` (`digits`)"
           }
         ]
       },
@@ -278,7 +284,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '55d368a1e6770048f948f00eb66ffa61')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2c26f74b170d9a0e46b43669ac65ac25')"
     ]
   }
 }
