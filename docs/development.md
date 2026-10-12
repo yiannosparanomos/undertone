@@ -61,10 +61,49 @@ VS Code Remote-SSH keeps working as before; both can have the repo open at once.
 
 ## Emulators
 
-Create emulators in Device Manager. Suggested set: a Pixel-size phone on Android 15 for daily
-work, plus Android 10 (minSdk) and Android 13 for checks. On the shared server, give each
-emulator up to 8 cores and 8–12 GB of RAM (Device Manager → edit → Advanced) and close them
-when done.
+Three AVDs cover the versions the project promises: **`UnderTone_API_29`** (Android 10, our
+minSdk), **`UnderTone_API_33`** (Android 13, where `POST_NOTIFICATIONS` became a runtime
+permission) and **`UnderTone_API_35`** (Android 15). Each is a Pixel 6 on a `google_apis`
+x86_64 image with 4 GB of RAM and 4 cores.
+
+`google_apis` rather than `google_apis_playstore` on purpose: Play Store images refuse
+`adb root`, which you want for looking inside the encrypted database. Both flavours include
+the Dialer and Contacts, without which the call-screening role cannot be granted at all.
+
+They run headless, which is how the tests are driven:
+
+```bash
+cd ~/remote_developement/Projects/android-projects/android-dev
+export ANDROID_HOME=$PWD/sdk ANDROID_AVD_HOME=$PWD/avd
+sdk/emulator/emulator -avd UnderTone_API_35 -port 5558 -no-window -no-audio \
+  -no-boot-anim -gpu swiftshader_indirect &
+until [ "$(sdk/platform-tools/adb -s emulator-5558 shell getprop sys.boot_completed | tr -d '\r')" = 1 ]; do sleep 5; done
+```
+
+They boot in roughly 20–25 s. Ports 5554/5556/5558 keep all three up at once, which is how
+`./gradlew connectedDebugAndroidTest` runs every instrumented test on all three versions in one
+go. `adb -s emulator-5558 emu kill` shuts one down; close them when you are done, and note that
+hardware acceleration comes from an ACL on `/dev/kvm` rather than membership of the `kvm` group.
+
+Useful while testing by hand:
+
+```bash
+adb shell cmd notification allow_listener <pkg>/io.github.yiannosparanomos.undertone.core.system.notification.UndertoneListenerService
+adb shell cmd notification allow_dnd <pkg>
+adb shell cmd role add-role-holder android.app.role.CALL_SCREENING <pkg>
+adb emu gsm call 5551110000      # and: adb emu gsm cancel 5551110000
+adb exec-out screencap -p > shot.png
+```
+
+Creating them again from scratch, if the folder is ever wiped:
+
+```bash
+sdkmanager "system-images;android-35;google_apis;x86_64" "platforms;android-35"
+avdmanager create avd -n UnderTone_API_35 -k "system-images;android-35;google_apis;x86_64" -d pixel_6
+```
+
+On the shared server, Device Manager can give an emulator up to 8 cores and 8–12 GB of RAM
+(edit → Advanced) if you need a heavier one.
 
 Build limits for Gradle are set in `android-dev/gradle/gradle.properties` (16 workers, 8 GB
 heap).
