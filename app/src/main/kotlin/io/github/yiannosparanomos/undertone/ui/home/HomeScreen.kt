@@ -1,144 +1,168 @@
 package io.github.yiannosparanomos.undertone.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.yiannosparanomos.undertone.Destinations
 import io.github.yiannosparanomos.undertone.R
-import io.github.yiannosparanomos.undertone.core.designsystem.UnderToneTheme
+import io.github.yiannosparanomos.undertone.core.designsystem.UtCount
 import io.github.yiannosparanomos.undertone.core.designsystem.UtLabel
+import io.github.yiannosparanomos.undertone.core.designsystem.UtListRow
 import io.github.yiannosparanomos.undertone.core.designsystem.UtPanel
+import io.github.yiannosparanomos.undertone.core.designsystem.UtRowDivider
 import io.github.yiannosparanomos.undertone.core.designsystem.UtSegmentedChoice
-import io.github.yiannosparanomos.undertone.core.domain.engine.NotificationEngine
-import io.github.yiannosparanomos.undertone.core.domain.model.AppRule
-import io.github.yiannosparanomos.undertone.core.domain.model.Level
+import io.github.yiannosparanomos.undertone.core.designsystem.UtStatus
+import io.github.yiannosparanomos.undertone.core.domain.model.Override
 import io.github.yiannosparanomos.undertone.core.domain.model.Profile
-import io.github.yiannosparanomos.undertone.core.domain.model.RuleState
-import io.github.yiannosparanomos.undertone.core.domain.model.UndertoneSettings
-import io.github.yiannosparanomos.undertone.core.domain.model.WeeklyWindow
-import java.time.LocalDate
-import java.time.LocalTime
+import io.github.yiannosparanomos.undertone.ui.common.Formatting
+import io.github.yiannosparanomos.undertone.ui.common.UtScreen
+import java.time.LocalDateTime
 
 /**
- * First version of Home: the profile switch and a live preview of one rule decision.
- * Settings are hard-coded until the data layer (core:data) exists.
+ * Home answers "what is happening right now, and why?" (UI direction, principle 1) and gets you
+ * to every other screen in one tap.
  */
 @Composable
-fun HomeScreen() {
-    var profileIndex by rememberSaveable { mutableIntStateOf(0) }
-    val profile = Profile.entries[profileIndex]
+fun HomeScreen(
+    onOpen: (String) -> Unit,
+    viewModel: HomeViewModel = viewModel(),
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    HomeContent(
+        state = state,
+        onOpen = onOpen,
+        onProfile = viewModel::setProfile,
+        onQuiet = viewModel::quietForAnHour,
+        onLetThrough = viewModel::letThroughForHalfAnHour,
+        onEndOverride = viewModel::endOverride,
+    )
+}
 
-    Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier =
-                Modifier
-                    .safeDrawingPadding()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.app_name).uppercase(),
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onBackground,
+@Composable
+internal fun HomeContent(
+    state: HomeUiState,
+    onOpen: (String) -> Unit,
+    onProfile: (Profile) -> Unit,
+    onQuiet: () -> Unit,
+    onLetThrough: () -> Unit,
+    onEndOverride: () -> Unit,
+    now: LocalDateTime = LocalDateTime.now(),
+) {
+    UtScreen(title = stringResource(R.string.app_name)) {
+        UtPanel {
+            UtLabel(stringResource(R.string.home_profile_label))
+            UtSegmentedChoice(
+                options =
+                    listOf(
+                        stringResource(R.string.profile_my_rules),
+                        stringResource(R.string.profile_allow_all),
+                        stringResource(R.string.profile_system_dnd),
+                    ),
+                selectedIndex = Profile.entries.indexOf(state.profile),
+                onSelect = { onProfile(Profile.entries[it]) },
             )
+            UtStatus(
+                headline =
+                    when (state.profile) {
+                        Profile.MY_RULES -> stringResource(R.string.home_status_my_rules)
+                        Profile.ALLOW_ALL -> stringResource(R.string.home_status_allow_all)
+                        Profile.SYSTEM_DND -> stringResource(R.string.home_status_system_dnd)
+                    },
+            )
+        }
 
-            UtPanel {
-                UtLabel(stringResource(R.string.home_profile_label))
-                UtSegmentedChoice(
-                    options =
-                        listOf(
-                            stringResource(R.string.profile_my_rules),
-                            stringResource(R.string.profile_allow_all),
-                            stringResource(R.string.profile_system_dnd),
-                        ),
-                    selectedIndex = profileIndex,
-                    onSelect = { profileIndex = it },
-                )
+        UtPanel {
+            UtLabel(stringResource(R.string.home_override_label))
+            Text(
+                text =
+                    when (val override = state.override) {
+                        null -> stringResource(R.string.home_override_none)
+                        is Override.Quiet ->
+                            stringResource(
+                                R.string.home_override_quiet,
+                                Formatting.moment(override.until, now),
+                            )
+                        is Override.LetThrough ->
+                            stringResource(
+                                R.string.home_override_let_through,
+                                Formatting.moment(override.until, now),
+                            )
+                    },
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = onQuiet, modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.home_override_quiet_1h))
+                }
+                OutlinedButton(onClick = onLetThrough, modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.home_override_through_30m))
+                }
             }
-
-            UtPanel {
-                UtLabel(stringResource(R.string.home_status_label))
-                Text(
-                    text = stringResource(statusText(profile)),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-
-            UtPanel {
-                UtLabel(stringResource(R.string.home_preview_label))
-                Text(
-                    text = stringResource(R.string.home_preview_body, previewDecision(profile)),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-
-            UtPanel {
-                UtLabel(stringResource(R.string.home_privacy_label))
-                Text(
-                    text = stringResource(R.string.home_privacy_body),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            if (state.override != null) {
+                OutlinedButton(onClick = onEndOverride, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.home_override_end))
+                }
             }
         }
-    }
-}
 
-private fun statusText(profile: Profile): Int =
-    when (profile) {
-        Profile.MY_RULES -> R.string.home_status_my_rules
-        Profile.ALLOW_ALL -> R.string.home_status_allow_all
-        Profile.SYSTEM_DND -> R.string.home_status_system_dnd
-    }
+        UtPanel {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(32.dp)) {
+                UtCount(state.heldCount, stringResource(R.string.home_held_count))
+                UtCount(state.blockedToday, stringResource(R.string.home_blocked_today))
+            }
+        }
 
-private const val TEAMS = "com.microsoft.teams"
+        UtPanel {
+            UtListRow(
+                title = stringResource(R.string.nav_apps),
+                onClick = { onOpen(Destinations.APPS) },
+            )
+            UtRowDivider()
+            UtListRow(
+                title = stringResource(R.string.nav_calls),
+                onClick = { onOpen(Destinations.CALLS) },
+            )
+            UtRowDivider()
+            UtListRow(
+                title = stringResource(R.string.nav_rules),
+                onClick = { onOpen(Destinations.RULES) },
+            )
+            UtRowDivider()
+            UtListRow(
+                title = stringResource(R.string.nav_held),
+                value = if (state.heldCount > 0) state.heldCount.toString() else null,
+                onClick = { onOpen(Destinations.HELD) },
+            )
+            UtRowDivider()
+            UtListRow(
+                title = stringResource(R.string.nav_sounds),
+                onClick = { onOpen(Destinations.SOUNDS) },
+            )
+            UtRowDivider()
+            UtListRow(
+                title = stringResource(R.string.nav_health),
+                onClick = { onOpen(Destinations.HEALTH) },
+            )
+        }
 
-/** Runs the real rule engine on a sample rule, so the screen shows engine output end to end. */
-private fun previewDecision(profile: Profile): String {
-    val settings =
-        UndertoneSettings(
-            appRules =
-                mapOf(
-                    TEAMS to
-                        AppRule(
-                            packageName = TEAMS,
-                            inHours = Level.RING,
-                            outsideHours = Level.HIDDEN,
-                            hours =
-                                listOf(
-                                    WeeklyWindow(WeeklyWindow.WEEKDAYS, LocalTime.of(9, 0), LocalTime.of(18, 0)),
-                                ),
-                        ),
-                ),
-        )
-    val saturday = LocalDate.of(2026, 10, 17).atTime(11, 0)
-    val decision = NotificationEngine.decide(TEAMS, saturday, RuleState(profile, settings))
-    return decision.releaseAt?.let { "${decision.outcome} until ${it.dayOfWeek} ${it.toLocalTime()}" }
-        ?: decision.outcome.name
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF000000)
-@Composable
-private fun HomeScreenPreview() {
-    UnderToneTheme(darkTheme = true) {
-        HomeScreen()
+        UtPanel {
+            UtLabel(stringResource(R.string.home_privacy_label))
+            Text(
+                text = stringResource(R.string.home_privacy_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }

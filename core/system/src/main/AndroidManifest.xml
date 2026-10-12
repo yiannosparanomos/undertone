@@ -14,11 +14,25 @@
     <!-- To tell whether a caller is a saved or starred contact, for ring tiers and the allow
          list. Numbers and names are read, never stored outside the encrypted database. -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- Optional: only read if the user turns calendar rules on. -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Rule boundaries have to land on the minute: a late alarm means the phone already rang. -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!--
+        To list the apps the user can set rules for. Deliberately a <queries> entry for the
+        launcher intent rather than QUERY_ALL_PACKAGES, so UnderTone sees only apps with an
+        icon on the phone (docs/play-store/permissions.md).
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
 
     <application>
 

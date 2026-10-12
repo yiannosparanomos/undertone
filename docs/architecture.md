@@ -18,9 +18,9 @@ feeds it events and carries out its decisions.
 |---|---|---|
 | `core:domain` | exists | Models, `NotificationEngine`, `CallEngine`, scenarios. Pure Kotlin, no clock. |
 | `core:designsystem` | exists | Theme, typography, shared Compose components. |
-| `app` | exists | Activity, navigation, screens under `ui/<feature>`. |
+| `app` | exists | Single activity, Compose navigation, the seven v1 screens under `ui/<feature>`, each with a view model over `core:data`. |
 | `core:data` | exists | Encrypted Room database (log, held inbox, recent calls, blocked counts), DataStore settings, export/import. ADR 0007. |
-| `core:system` | exists | `NotificationListenerService`, `CallScreeningService`, contact lookup, DND controller, sound player, boundary alarms, watchdog and boot receiver. The calendar reader and the launchable-app list are still to come (M5). |
+| `core:system` | exists | `NotificationListenerService`, `CallScreeningService`, contact lookup, DND controller, sound player, boundary alarms, watchdog and boot receiver, the calendar reader and the launchable-app catalogue. |
 | `widget` | planned | Home-screen widget (Jetpack Glance) and Quick Settings tile. |
 
 Modules are added when their first real code lands; empty placeholder modules are not

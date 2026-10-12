@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Every user-visible string lives here (CLAUDE.md conventions). -->
 <resources>
     <string name="app_name">UnderTone</string>
 
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_apps">Apps</string>
+    <string name="nav_calls">Calls</string>
+    <string name="nav_rules">Rules</string>
+    <string name="nav_held">Held and log</string>
+    <string name="nav_sounds">Sounds</string>
+    <string name="nav_health">Health check</string>
+    <string name="nav_back">Back</string>
+
+    <!-- Profiles -->
     <string name="home_profile_label">Profile</string>
     <string name="profile_my_rules">My rules</string>
     <string name="profile_allow_all">Allow all</string>
@@ -12,9 +24,153 @@
     <string name="home_status_allow_all">Everything comes through, like a normal phone.</string>
     <string name="home_status_system_dnd">Android\'s own Do Not Disturb is in charge.</string>
 
-    <string name="home_preview_label">Preview</string>
-    <string name="home_preview_body">Teams on Saturday at 11:00 would be: %1$s</string>
-
     <string name="home_privacy_label">Privacy</string>
     <string name="home_privacy_body">UnderTone has no internet access. Nothing leaves this phone.</string>
+
+    <!-- Overrides -->
+    <string name="home_override_label">Override</string>
+    <string name="home_override_none">No override. Your schedule applies.</string>
+    <string name="home_override_quiet">Quiet until %1$s</string>
+    <string name="home_override_let_through">Everything through until %1$s</string>
+    <string name="home_override_quiet_1h">Quiet 1h</string>
+    <string name="home_override_through_30m">Through 30m</string>
+    <string name="home_override_end">End override</string>
+
+    <string name="home_held_label">Held</string>
+    <string name="home_held_count">waiting</string>
+    <string name="home_blocked_today">blocked today</string>
+
+    <!-- Levels -->
+    <string name="level_ring">Ring</string>
+    <string name="level_silent">Silent</string>
+    <string name="level_hidden">Hidden</string>
+    <string name="level_blocked">Blocked</string>
+
+    <!-- Apps screen -->
+    <string name="apps_default_label">All apps</string>
+    <string name="apps_default_subtitle">The level every app gets unless you change it</string>
+    <string name="apps_focus_label">Focus apps</string>
+    <string name="apps_focus_empty">No app has its own rule yet. Pick one below.</string>
+    <string name="apps_all_label">All apps on this phone</string>
+    <string name="apps_blocked_label">Blocked</string>
+    <string name="apps_blocked_empty">Nothing is blocked.</string>
+    <string name="apps_restore">Restore</string>
+    <string name="apps_in_hours">In hours</string>
+    <string name="apps_outside_hours">Outside hours</string>
+    <string name="apps_hours">Hours</string>
+    <string name="apps_hours_always">Always in hours</string>
+    <string name="apps_hours_add">Add hours</string>
+    <string name="apps_hours_remove">Remove</string>
+    <string name="apps_hours_weekdays">Mon-Fri 09:00-18:00</string>
+    <string name="apps_hours_weekend">Sat-Sun 10:00-23:00</string>
+    <string name="apps_hours_evening">Every evening 18:00-23:00</string>
+    <string name="apps_hours_night">Every night 22:00-07:00</string>
+    <string name="apps_remove_rule">Use the All apps default</string>
+
+    <!-- Calls screen -->
+    <string name="calls_tier_label">Who rings</string>
+    <string name="tier_everyone">Everyone</string>
+    <string name="tier_contacts">Contacts</string>
+    <string name="tier_allow_list">Allow list</string>
+    <string name="tier_nobody">Nobody</string>
+    <string name="calls_never_rejected">Calls are never rejected. A call that does not ring arrives silently and shows as missed.</string>
+
+    <string name="calls_allow_list_label">Allow list</string>
+    <string name="calls_allow_starred">Starred contacts</string>
+    <string name="calls_allow_starred_detail">The same list Android\'s own Do Not Disturb uses.</string>
+    <string name="calls_allow_expanded">Starred, plus people added here</string>
+    <string name="calls_allow_numbers">Numbers added here</string>
+    <string name="calls_allow_numbers_empty">No extra numbers.</string>
+    <string name="calls_allow_add_number">Add a number</string>
+    <string name="calls_allow_remove">Remove</string>
+
+    <string name="calls_repeat_label">Repeat callers</string>
+    <string name="calls_repeat_enabled">Let repeat callers through</string>
+    <string name="calls_repeat_detail">Someone who calls again quickly can ring even when their tier would not.</string>
+    <string name="calls_repeat_group">Who counts</string>
+    <string name="calls_repeat_group_allow_list">Allow list</string>
+    <string name="calls_repeat_group_everyone">Everyone</string>
+    <string name="calls_repeat_calls">Calls needed</string>
+    <string name="calls_repeat_window">Within</string>
+    <string name="calls_minutes">%1$d min</string>
+
+    <!-- Rules screen -->
+    <string name="rules_calendar_label">Calendar rules</string>
+    <string name="rules_calendar_empty">No calendar rules. Add one to stay quiet during meetings.</string>
+    <string name="rules_calendar_add">Add a calendar rule</string>
+    <string name="rules_calendar_permission">UnderTone needs calendar access to apply these rules.</string>
+    <string name="rules_calendar_grant">Grant calendar access</string>
+    <string name="rules_calendar_no_calendars">No calendars are synced to this phone.</string>
+    <string name="rules_match_calendar">Every event in a calendar</string>
+    <string name="rules_match_series">Every occurrence of an event</string>
+    <string name="rules_match_title">Events whose title contains</string>
+    <string name="rules_others_level">Everything else</string>
+    <string name="rules_call_tier">Calls during the event</string>
+    <string name="rules_all_day">Include all-day events</string>
+    <string name="rules_remove">Remove rule</string>
+    <string name="rules_stricter_note">A calendar rule can make things quieter, never louder than your schedule.</string>
+
+    <string name="rules_retention_label">How long history is kept</string>
+    <string name="rules_retention_days">%1$d days</string>
+    <string name="rules_export">Export settings</string>
+    <string name="rules_import">Import settings</string>
+    <string name="rules_export_done">Settings exported.</string>
+    <string name="rules_import_done">Settings imported.</string>
+    <string name="rules_import_failed">Could not read that file: %1$s</string>
+
+    <!-- Held and log -->
+    <string name="held_inbox_label">Held</string>
+    <string name="held_inbox_empty">Nothing is waiting.</string>
+    <string name="held_release_all">Release all</string>
+    <string name="held_release">Release</string>
+    <string name="held_until">Until %1$s</string>
+    <string name="held_until_unknown">Waiting</string>
+
+    <string name="log_label">Log</string>
+    <string name="log_empty">Nothing silenced or held yet.</string>
+    <string name="log_open_app">Open app</string>
+    <string name="log_block_app">Block app</string>
+    <string name="log_silence_app">Make it Silent</string>
+    <string name="log_retention_note">Entries delete themselves after %1$d days.</string>
+
+    <string name="suggestions_label">Suggestions</string>
+    <string name="suggestions_body">You swiped %1$d notifications from %2$s away without opening any.</string>
+
+    <!-- Sounds -->
+    <string name="sounds_default_label">Default Ring sound</string>
+    <string name="sounds_system_default">The system notification sound</string>
+    <string name="sounds_vibrate">Vibrate</string>
+    <string name="sounds_volume">Volume</string>
+    <string name="sounds_test">Test</string>
+    <string name="sounds_per_app_label">Per app</string>
+    <string name="sounds_per_app_empty">Every Ring app uses the default sound.</string>
+    <string name="sounds_why">While My rules is on, UnderTone plays Ring sounds itself, because Do Not Disturb mutes the phone\'s own.</string>
+    <string name="sounds_inaudible">Your notification volume is down, so Ring apps will be silent.</string>
+
+    <!-- Health check -->
+    <string name="health_ok">Everything UnderTone needs is in place.</string>
+    <string name="health_problems">%1$d things need attention.</string>
+    <string name="health_notification_access">Notification access</string>
+    <string name="health_notification_access_why">Without it UnderTone cannot see or act on notifications.</string>
+    <string name="health_dnd_access">Do Not Disturb access</string>
+    <string name="health_dnd_access_why">Needed to keep the phone quiet while your rules decide what rings.</string>
+    <string name="health_call_screening">Call screening</string>
+    <string name="health_call_screening_why">Needed to silence calls your ring tier does not allow.</string>
+    <string name="health_contacts">Contacts</string>
+    <string name="health_contacts_why">Needed to tell whether a caller is a saved or starred contact.</string>
+    <string name="health_calendar">Calendar</string>
+    <string name="health_calendar_why">Optional: only needed for calendar rules.</string>
+    <string name="health_exact_alarms">Exact alarms</string>
+    <string name="health_exact_alarms_why">So rules change on the minute your hours start or end.</string>
+    <string name="health_notification_volume">Notification volume</string>
+    <string name="health_notification_volume_why">Ring apps can only be heard while the notification volume is up.</string>
+    <string name="health_granted">On</string>
+    <string name="health_missing">Off</string>
+    <string name="health_fix">Fix</string>
+    <string name="health_recheck">Check again</string>
+
+    <!-- Shared -->
+    <string name="action_done">Done</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_add">Add</string>
 </resources>

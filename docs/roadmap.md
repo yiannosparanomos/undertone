@@ -57,11 +57,23 @@ until then.
 
 ## M5: Screens
 
-- [ ] Apps: All-apps default, focus apps, levels in/out of hours, hours editor, blocked section
-- [ ] Calls: tier, allow list, repeat-caller settings
-- [ ] Rules: calendar rules (calendar picker, event series/title/calendar), overrides
-- [ ] Held and log: inbox, Release all, log with long-press Block, suggestions
-- [ ] Sounds; Health check
+- [x] Apps: All-apps default, focus apps, levels in/out of hours, hours editor, blocked section
+- [x] Calls: tier, allow list, repeat-caller settings
+- [x] Rules: calendar rules (calendar picker, event series/title/calendar), overrides
+- [x] Held and log: inbox, Release all, log with Block, suggestions
+- [x] Sounds; Health check
+
+Two deliberate departures from the bullets, both worth a look in review:
+
+- The **hours editor** offers four named windows (weekdays, weekends, evenings, nights) rather
+  than a free time picker. Every example in the spec is of that shape and a preset is far
+  quicker to set and to read back. A custom editor can follow if it is missed.
+- The log's actions are **shown on tap** rather than hidden behind a long press. Same actions,
+  reachable with TalkBack.
+
+Still to come with the setup tour (M6), which owns the prominent-disclosure screen: requesting
+runtime permissions and the call-screening role in-app. The Health check links to the system
+screens for each in the meantime. Per-app sounds have storage and a pipeline but no picker yet.
 
 ## M6: Setup tour
 

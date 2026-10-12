@@ -30,6 +30,12 @@ All notable changes are documented here. The format follows
 - Calls: `CallScreeningService` driving `CallEngine` through a `CallPipeline`, contact and
   allow-list resolution (starred contacts, or expanded with people and numbers added in
   UnderTone), and recent-call history for the repeat-caller rule. Calls are only ever silenced.
+- Screens: Home (profile, override, counts, a tap to everything), Apps (All-apps default, focus
+  apps, per-app levels and hours, blocked), Calls (tier, allow list, repeat callers), Rules
+  (calendar rules, retention, settings export and import), Held and log (inbox, Release all,
+  log with Block and Silence, block suggestions), Sounds and Health check.
+- `core:system` gains the launchable-app catalogue (via a `<queries>` entry, not
+  `QUERY_ALL_PACKAGES`) and the real calendar reader.
 - CI now also checks invariant 6 — the release manifest exports nothing but the launcher
   activity (`tools/ci/check_exported_components.py`).
 - Docs: spec, architecture and ADRs, test matrix, device checklist, development setup,

@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import io.github.yiannosparanomos.undertone.core.designsystem.UnderToneTheme
-import io.github.yiannosparanomos.undertone.ui.home.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +12,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             UnderToneTheme {
-                HomeScreen()
+                UndertoneNavHost()
             }
         }
     }

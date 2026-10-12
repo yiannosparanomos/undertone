@@ -4,6 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 private val PanelShape = RoundedCornerShape(16.dp)
@@ -58,6 +62,7 @@ fun UtLabel(
  * A row of mutually exclusive options, e.g. the three profiles.
  * The selected option is marked by the accent colour and announced to screen readers.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun UtSegmentedChoice(
     options: List<String>,
@@ -65,18 +70,27 @@ fun UtSegmentedChoice(
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    // A flow row rather than equal-weight columns: with four options, labels like "Everyone"
+    // are wider than a quarter of the screen and were breaking mid-word. Letting each button
+    // take the width its label needs, and wrap to a second line when they do not all fit,
+    // keeps every label readable at any font scale.
+    FlowRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
         options.forEachIndexed { index, label ->
             val selected = index == selectedIndex
             OutlinedButton(
                 onClick = { onSelect(index) },
+                // Labels like "My rules" and "System DND" must stay readable, so the button
+                // gives the text the room instead of clipping it to one line.
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
                 modifier =
-                    Modifier
-                        .weight(1f)
-                        .semantics {
-                            role = Role.RadioButton
-                            this.selected = selected
-                        },
+                    Modifier.semantics {
+                        role = Role.RadioButton
+                        this.selected = selected
+                    },
                 border =
                     BorderStroke(
                         width = if (selected) 2.dp else 1.dp,
@@ -87,7 +101,9 @@ fun UtSegmentedChoice(
                     text = label,
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    softWrap = true,
                 )
             }
         }
